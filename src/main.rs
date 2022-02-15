@@ -4,6 +4,7 @@ mod entity;
 mod vector2;
 mod transform;
 mod rigidbody;
+mod gravity;
 mod physics;
 
 use crate::{

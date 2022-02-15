@@ -3,7 +3,8 @@ use crate::{
     vector2::Vector2,
     component::ComponentManager,
     transform::Transform,
-    rigidbody::Rigidbody
+    rigidbody::Rigidbody,
+    gravity::Gravity,
 };
 
 pub struct PhysicsSystem {}
@@ -16,21 +17,29 @@ impl Default for PhysicsSystem {
 
 impl System for PhysicsSystem {
     fn update(&mut self, entities: usize, component_manager: &mut ComponentManager) {
-        let mut transform_list = component_manager.get_components::<Transform>();
-        // let rigidbody_list = component_manager.get_components::<Rigidbody>();
-
         for entity in 0..entities {
-            let has_transform_component = transform_list.entity_map.contains_key(&entity);
-            // let has_rigidbody_component = rigidbody_list.entity_map.contains_key(&entity);
+            let has_transform_component = component_manager.entity_has_component::<Transform>(entity);
+            let has_rigidbody_component = component_manager.entity_has_component::<Rigidbody>(entity);
+            let has_gravity_component = component_manager.entity_has_component::<Gravity>(entity);
 
-            if has_transform_component {//&& has_rigidbody_component {
-                let transform = transform_list.get_entity_component(entity);
-                // let rigidbody = rigidbody_list.get_entity_component(entity);
+            if has_transform_component && has_rigidbody_component && has_gravity_component {
+                let transform_list = component_manager.get_components_mut::<Transform>();
+                let rigidbody_list = component_manager.get_components_mut::<Rigidbody>();
+                let gravity_list = component_manager.get_components::<Gravity>();
 
-                // transform.pos = Vector2::new(
-                //     transform.pos.x + rigidbody.vel.x,
-                //     transform.pos.y + rigidbody.vel.y
-                // );
+                let transform = transform_list.get_entity_component_mut(entity);
+                let rigidbody = rigidbody_list.get_entity_component_mut(entity);
+                let gravity = gravity_list.get_entity_component(entity);
+
+                rigidbody.vel = Vector2::new(
+                    rigidbody.vel.x,
+                    rigidbody.vel.y - gravity.0,
+                );
+
+                transform.pos = Vector2::new(
+                    transform.pos.x + rigidbody.vel.x,
+                    transform.pos.y + rigidbody.vel.y
+                );
             }
         }
     }
