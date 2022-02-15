@@ -1,5 +1,4 @@
 mod system;
-mod manager;
 mod component;
 mod entity;
 mod vector2;
@@ -9,29 +8,22 @@ mod physics;
 
 use crate::{
   vector2::Vector2,
-  system::System,
-  system::SystemManager,
-  manager::Manager,
-  transform::Transform,
   rigidbody::Rigidbody,
-  transform::TransformManager,
-  rigidbody::RigidbodyManager,
   physics::PhysicsSystem,
+  transform::Transform,
+  system::SystemManager,
+  component::ComponentManager,
 };
 
 fn main() {
   // initialize systems
-  let transform_manager = TransformManager::new();
-  let rigidbody_manager = RigidbodyManager::new();
-
+  let mut component_manager = ComponentManager::new();
   let mut system_manager = SystemManager::new();
 
-  let mut physics_system = PhysicsSystem {
-    transform_manager,
-    rigidbody_manager
-  };
+  component_manager.register_components::<Transform>();
+  component_manager.register_components::<Rigidbody>();
 
-  system_manager.register_system(Box::new(physics_system));
+  system_manager.register_system::<PhysicsSystem>();
 
   // create three entities
   for _ in 0..3 {
@@ -47,7 +39,7 @@ fn main() {
     // physics_system.rigidbody_manager.add_component(entity, Box::new(rigidbody));
   }
 
-  system_manager.update();
+  system_manager.update(&mut component_manager);
   // physics_system.update(system_manager.entity_system.entities);
   // physics_system.transform_manager.print_transforms();
 }

@@ -2,16 +2,16 @@ use std::{
   collections::HashMap,
   any::{
       TypeId,
-      Any
   }
 };
 
 use crate::{
-  entity::EntitySystem
+  entity::EntitySystem,
+  component::ComponentManager
 };
 
 pub trait System {
-  fn update(&mut self, entities: usize);
+  fn update(&mut self, entities: usize, component_manager: &mut ComponentManager);
 }
 
 pub struct SystemManager {
@@ -21,23 +21,24 @@ pub struct SystemManager {
 
 impl SystemManager {
   pub fn new() -> Self {
-      Self {
-          entity_system: EntitySystem::new(),
-          systems: HashMap::new(),
-      }
+    Self {
+      entity_system: EntitySystem::new(),
+      systems: HashMap::new(),
+    }
   }
 
-  pub fn register_system(&mut self, system: Box<dyn System>) {
-      self.systems.insert(system.type_id(), system);
+  pub fn register_system<T: 'static>(&mut self) where T: Default + System {
+    let system = T::default();
+    self.systems.insert(TypeId::of::<T>(), Box::new(system));
   }
 
   pub fn get_system<T: 'static>(&self) -> &Box<dyn System> where T : System {
-      &self.systems.get(&TypeId::of::<T>()).unwrap()
+    &self.systems.get(&TypeId::of::<T>()).unwrap()
   }
 
-  pub fn update(&mut self) {
-      for (_, system) in &mut self.systems {
-          system.update(self.entity_system.entities);
-      }
+  pub fn update(&mut self, component_manager: &mut ComponentManager) {
+    for (_, system) in &mut self.systems {
+      system.update(self.entity_system.entities, component_manager);
+    }
   }
 }
