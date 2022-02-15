@@ -19,6 +19,7 @@ pub struct SystemManager {
   pub systems: HashMap<TypeId, Box<dyn System>>
 }
 
+#[allow(dead_code)]
 impl SystemManager {
   pub fn new() -> Self {
     Self {

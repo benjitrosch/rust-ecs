@@ -43,6 +43,7 @@ pub struct ComponentManager {
     pub component_lists: HashMap<TypeId, Box<dyn Any>>
 }
 
+#[allow(dead_code)]
 impl ComponentManager {  
     pub fn new() -> Self {
         Self {

@@ -9,22 +9,26 @@ mod physics;
 
 use crate::{
   vector2::Vector2,
-  rigidbody::Rigidbody,
   physics::PhysicsSystem,
   transform::Transform,
+  rigidbody::Rigidbody,
+  gravity::Gravity,
   system::SystemManager,
   component::ComponentManager,
 };
 
 fn main() {
-  // initialize systems
+  // initialize managers
   let mut component_manager = ComponentManager::new();
   let mut system_manager = SystemManager::new();
 
+  // register systems
+  system_manager.register_system::<PhysicsSystem>();
+
+  // register components
   component_manager.register_components::<Transform>();
   component_manager.register_components::<Rigidbody>();
-
-  system_manager.register_system::<PhysicsSystem>();
+  component_manager.register_components::<Gravity>();
 
   // create three entities
   for _ in 0..3 {
@@ -35,12 +39,13 @@ fn main() {
   for entity in 0..system_manager.entity_system.entities {
     let transform = Transform::default();
     let rigidbody = Rigidbody { vel: Vector2::new(1.0 * (entity as f64), 0.5 * (entity as f64)) };
+    let gravity = Gravity(9.8);
 
-    // physics_system.transform_manager.add_component(entity, Box::new(transform));
-    // physics_system.rigidbody_manager.add_component(entity, Box::new(rigidbody));
+    component_manager.add_component::<Transform>(entity, transform);
+    component_manager.add_component::<Rigidbody>(entity, rigidbody);
+    component_manager.add_component::<Gravity>(entity, gravity);
   }
 
+  // update once
   system_manager.update(&mut component_manager);
-  // physics_system.update(system_manager.entity_system.entities);
-  // physics_system.transform_manager.print_transforms();
 }

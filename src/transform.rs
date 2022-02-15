@@ -1,6 +1,7 @@
 use crate::vector2::Vector2;
 use crate::component::Component;
 
+#[derive(Copy, Clone)]
 pub struct Transform {
   pub pos: Vector2
 }
