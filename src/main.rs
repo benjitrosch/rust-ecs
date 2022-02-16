@@ -46,6 +46,9 @@ fn main() {
     component_manager.add_component::<Gravity>(entity, gravity);
   }
 
-  // update once
-  system_manager.update(&mut component_manager);
+  // run update a few times and print new values
+  for _ in 0..3 {
+    system_manager.update(&mut component_manager);
+    component_manager.get_components::<Transform>().print_all_components();
+  }
 }
