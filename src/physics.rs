@@ -23,14 +23,14 @@ impl System for PhysicsSystem {
             let has_gravity_component = component_manager.entity_has_component::<Gravity>(entity);
 
             if has_transform_component && has_rigidbody_component && has_gravity_component {
-                let transform_list = component_manager.get_components::<Transform>();
-                let transform = *transform_list.get_entity_component(entity);
+                let transform_list = component_manager.get_components::<Transform>().unwrap();
+                let transform = *transform_list.get_entity_component(entity).unwrap();
 
-                let rigidbody_list = component_manager.get_components::<Rigidbody>();
-                let rigidbody = *rigidbody_list.get_entity_component(entity);
+                let rigidbody_list = component_manager.get_components::<Rigidbody>().unwrap();
+                let rigidbody = *rigidbody_list.get_entity_component(entity).unwrap();
 
-                let gravity_list = component_manager.get_components::<Gravity>();
-                let gravity = *gravity_list.get_entity_component(entity);
+                let gravity_list = component_manager.get_components::<Gravity>().unwrap();
+                let gravity = *gravity_list.get_entity_component(entity).unwrap();
 
                 let new_velocity = Vector2::new(
                     rigidbody.vel.x,
@@ -42,12 +42,12 @@ impl System for PhysicsSystem {
                     transform.pos.y + rigidbody.vel.y
                 );
 
-                let rigidbody_list_mut = component_manager.get_components_mut::<Rigidbody>();
-                let rigidbody_ref = rigidbody_list_mut.get_entity_component_mut(entity);
+                let rigidbody_list_mut = component_manager.get_components_mut::<Rigidbody>().unwrap();
+                let rigidbody_ref = rigidbody_list_mut.get_entity_component_mut(entity).unwrap();
                 rigidbody_ref.vel = new_velocity;
 
-                let transform_list_mut = component_manager.get_components_mut::<Transform>();
-                let transform_ref = transform_list_mut.get_entity_component_mut(entity);
+                let transform_list_mut = component_manager.get_components_mut::<Transform>().unwrap();
+                let transform_ref = transform_list_mut.get_entity_component_mut(entity).unwrap();
                 transform_ref.pos = new_position;
             }
         }

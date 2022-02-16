@@ -19,7 +19,7 @@ impl Component for Transform {
     println!(
       "pos: ({:.2}, {:.2})",
       self.pos.x,
-      self.pos.y
+      self.pos.y,
     );
   }
 }

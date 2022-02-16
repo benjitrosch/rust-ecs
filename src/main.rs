@@ -25,11 +25,6 @@ fn main() {
   // register systems
   system_manager.register_system::<PhysicsSystem>();
 
-  // register components
-  component_manager.register_components::<Transform>();
-  component_manager.register_components::<Rigidbody>();
-  component_manager.register_components::<Gravity>();
-
   // create three entities
   for _ in 0..3 {
     system_manager.entity_system.create_entity();
@@ -49,6 +44,8 @@ fn main() {
   // run update a few times and print new values
   for _ in 0..3 {
     system_manager.update(&mut component_manager);
-    component_manager.get_components::<Transform>().print_all_components();
+    if let Some(c) = component_manager.get_components::<Transform>() {
+      c.print_all_components();
+    }
   }
 }

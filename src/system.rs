@@ -33,8 +33,8 @@ impl SystemManager {
     self.systems.insert(TypeId::of::<T>(), Box::new(system));
   }
 
-  pub fn get_system<T: 'static>(&self) -> &Box<dyn System> where T : System {
-    &self.systems.get(&TypeId::of::<T>()).unwrap()
+  pub fn get_system<T: 'static>(&self) -> Option<&Box<dyn System>> where T : System {
+    self.systems.get(&TypeId::of::<T>())
   }
 
   pub fn update(&mut self, component_manager: &mut ComponentManager) {
